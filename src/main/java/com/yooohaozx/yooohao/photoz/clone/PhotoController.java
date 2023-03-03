@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @PackageName:photoz-clone
  * @ClassName: PhotoController
@@ -13,9 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class PhotoController {
+    private List<Photo> dataBase = List.of(new Photo("1","hello.jpg"));
 
     @GetMapping("/")
     public String hello(){
         return "Hello world";
+    }
+
+    @GetMapping("/photoz")
+    public List<Photo> get(){
+        return dataBase;
     }
 }

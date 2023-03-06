@@ -1,6 +1,7 @@
-package com.yooohaozx.yooohao.photoz.clone;
+package com.yooohaozx.yooohao.photoz.clone.web;
 
-import jakarta.validation.Valid;
+import com.yooohaozx.yooohao.photoz.clone.model.Photo;
+import com.yooohaozx.yooohao.photoz.clone.service.PhotoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +19,14 @@ import java.util.*;
  */
 @RestController
 public class PhotoController {
-    private Map<String, Photo> dataBase = new HashMap<>(){{
-        put("1",new Photo("1","hello.jpg"));
-    }};
-//    private List<Photo> dataBase = List.of(new Photo("1","hello.jpg"));
+
+    private final PhotoService photoService;
+
+    public PhotoController(PhotoService photoService) {
+        this.photoService = photoService;
+    }
+
+    //    private List<Photo> dataBase = List.of(new Photo("1","hello.jpg"));
 
     @GetMapping("/")
     public String hello(){
@@ -30,12 +35,12 @@ public class PhotoController {
 
     @GetMapping("/photoz")
     public Collection<Photo> get(){
-        return dataBase.values();
+        return photoService.get();
     }
 
     @GetMapping("/photoz/{id}")
     public Photo get(@PathVariable String id){
-        Photo photo = dataBase.get(id);
+        Photo photo = photoService.get(id);
         if (photo == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -44,7 +49,7 @@ public class PhotoController {
 
     @DeleteMapping("/photoz/{id}")
     public void delete(@PathVariable String id){
-        Photo photo = dataBase.remove(id);
+        Photo photo = photoService.remove(id);
         if (photo == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -52,11 +57,8 @@ public class PhotoController {
 
     @PostMapping("/photoz")
     public Photo create(@RequestPart("data") MultipartFile file) throws IOException {
-        Photo photo = new Photo();
-        photo.setId(UUID.randomUUID().toString());
-        photo.setFileName(file.getOriginalFilename());
-        photo.setData(file.getBytes());
-        dataBase.put(photo.getId(), photo);
+
+        Photo photo = photoService.save(file.getOriginalFilename(),file.getContentType(),file.getBytes());
         return photo;
     }
 

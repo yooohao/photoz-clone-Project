@@ -1,10 +1,13 @@
 package com.yooohaozx.yooohao.photoz.clone;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @PackageName:photoz-clone
@@ -15,7 +18,10 @@ import java.util.List;
  */
 @RestController
 public class PhotoController {
-    private List<Photo> dataBase = List.of(new Photo("1","hello.jpg"));
+    private Map<String, Photo> dataBase = new HashMap<>(){{
+        put("1",new Photo("1","hello.jpg"));
+    }};
+//    private List<Photo> dataBase = List.of(new Photo("1","hello.jpg"));
 
     @GetMapping("/")
     public String hello(){
@@ -23,7 +29,35 @@ public class PhotoController {
     }
 
     @GetMapping("/photoz")
-    public List<Photo> get(){
-        return dataBase;
+    public Collection<Photo> get(){
+        return dataBase.values();
     }
+
+    @GetMapping("/photoz/{id}")
+    public Photo get(@PathVariable String id){
+        Photo photo = dataBase.get(id);
+        if (photo == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return photo;
+    }
+
+    @DeleteMapping("/photoz/{id}")
+    public void delete(@PathVariable String id){
+        Photo photo = dataBase.remove(id);
+        if (photo == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/photoz")
+    public Photo create(@RequestPart("data") MultipartFile file) throws IOException {
+        Photo photo = new Photo();
+        photo.setId(UUID.randomUUID().toString());
+        photo.setFileName(file.getOriginalFilename());
+        photo.setData(file.getBytes());
+        dataBase.put(photo.getId(), photo);
+        return photo;
+    }
+
 }

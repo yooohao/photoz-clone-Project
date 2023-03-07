@@ -1,12 +1,9 @@
 package com.yooohaozx.yooohao.photoz.clone.service;
 
 import com.yooohaozx.yooohao.photoz.clone.model.Photo;
+import com.yooohaozx.yooohao.photoz.clone.repository.PhotozRepository;
 import org.springframework.stereotype.Component;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import org.springframework.stereotype.Service;
 
 /**
  * @PackageName:photoz-clone
@@ -15,33 +12,34 @@ import java.util.UUID;
  * @author: ZIHAO
  * @date 2023-03-06 19:07
  */
-@Component
-//@Service
+//@Component
+@Service
 public class PhotoService {
 
-    private Map<String, Photo> dataBase = new HashMap<>(){{
-        put("1",new Photo("1","hello.jpg"));
-    }};
+    private final PhotozRepository photozRepository;
 
-    public Collection<Photo> get() {
-        return dataBase.values();
+    public PhotoService(PhotozRepository photozRepository) {
+        this.photozRepository = photozRepository;
     }
 
-    public Photo get(String id) {
-        return dataBase.get(id);
+    public Iterable<Photo> get() {
+        return photozRepository.findAll();
     }
 
-    public Photo remove(String id) {
-        return dataBase.remove(id);
+    public Photo get(Integer id) {
+        return photozRepository.findById(id).orElse(null);
+    }
+
+    public void remove(Integer id) {
+        photozRepository.deleteById(id);
     }
 
     public Photo save(String fileName, String contentType, byte[] data) {
         Photo photo = new Photo();
         photo.setContentType(contentType);
-        photo.setId(UUID.randomUUID().toString());
         photo.setFileName(fileName);
         photo.setData(data);
-        dataBase.put(photo.getId(), photo);
+        photozRepository.save(photo);
         return photo;
     }
 }

@@ -36,8 +36,8 @@ public class PhotoService {
 
     public Photo save(String fileName, String contentType, byte[] data) {
         Photo photo = new Photo();
-        photo.setContentType(contentType);
         photo.setFileName(fileName);
+        photo.setContentType(contentType);
         photo.setData(data);
         photozRepository.save(photo);
         return photo;

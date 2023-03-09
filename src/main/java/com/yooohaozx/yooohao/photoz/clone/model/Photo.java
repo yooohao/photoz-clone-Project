@@ -20,6 +20,7 @@ public class Photo {
 
     @NotEmpty
     private String fileName;
+
     private String contentType;
 
     @JsonIgnore

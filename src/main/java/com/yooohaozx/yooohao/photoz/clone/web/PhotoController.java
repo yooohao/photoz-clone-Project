@@ -30,7 +30,7 @@ public class PhotoController {
 
     @GetMapping("/")
     public String hello(){
-        return "Hello world";
+        return "This is my first Springboot Project!";
     }
 
     @GetMapping("/photoz")

@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>photoz-clone</name>
 	<description>Demo project for Spring Boot</description>
+<!--	java版本-->
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -21,6 +22,7 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+<!--			以后访问数据库的权限-->
 			<artifactId>spring-boot-starter-data-jdbc</artifactId>
 		</dependency>
 
